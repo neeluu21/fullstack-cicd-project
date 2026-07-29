@@ -1,0 +1,32 @@
+name: Full Stack CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Frontend
+        run: docker build -t neelu196/frontend:latest ./frontend
+
+      - name: Build Backend
+        run: docker build -t neelu196/backend:latest ./backend
+
+      - name: Push Frontend
+        run: docker push neelu196/frontend:latest
+
+      - name: Push Backend
+        run: docker push neelu196/backend:latest
